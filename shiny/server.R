@@ -1,29 +1,48 @@
-
-
-
-# Define server logic for slider examples
 shinyServer(function(input, output) {
-
   
-  # Reactive expression to compose a data frame containing all of the values
-  sliderValues <- reactive({
-    
-    # Compose data frame
-    data.frame(
-      Name = c("Integer",
-               "Decimal",
-               "Range",
-               "Custom Format",
-               "Animation"),
-      Value = as.character(c(input$integer,
-                             input$decimal,
-                             paste(input$range, collapse=' '),
-                             input$format,
-                             input$animation)),
-      stringsAsFactors=FALSE)
+  #Funcion subset
+  sub_set <- function(df, colum, val){
+    return (df[df[,colum]==val,])
+  }
+
+  #Subsets
+  deporte <- reactive({
+    if(input$allSports == FALSE){
+      entidades %>% sub_set("Deporte", tolower(input$selSport))
+    }else{
+      entidades
+    }
   })
+  
+  pueblo <- reactive({
+    entidades %>% sub_set("COD_MUN", input$selMuni)
+  })
+  
+  provincia <- reactive({
+    entidades %>% sub_set("CPRO", input$selProv)
+  })
+  
+  
+  anoInscripcion <- reactive({ 
+    entidades[entidades$Fechainscripcion>= paste(as.character(input$fechacreacion[1]),"-01-01", sep="") & entidades$Fechainscripcion<= paste(as.character(input$fechacreacion[2]),"-01-01", sep=""),]
+  })
+  
+  muni_lv <- reactive({
+    if(input$allSports == FALSE){
+      entidades %>%  sub_set("COD_MUN", input$selMuni) %>% sub_set("Deporte", input$selSport) 
+      #ar[ar$Fechainscripcion>= paste(as.character(input$fechacreacion[1]),"-01-01", sep="") & ar$Fechainscripcion<= paste(as.character(input$fechacreacion[2]),"-01-01", sep=""),]
+      
+    }else{
+      entidades %>%  sub_set("COD_MUN", input$selMuni)
+    }
+  })
+  
+  
   # Show the values using an HTML table
   output$values <- renderTable({
-    sliderValues()
+    #anoInscripcion()
+    h1("Por ahora desactivado")
+    #deporte()
+    muni_lv()
   })
 })

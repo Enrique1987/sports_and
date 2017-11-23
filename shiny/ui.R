@@ -1,21 +1,3 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-#tags$style(type="text/css", "select { max-width: 240px; }"),
-#tags$style(type="text/css", ".span4 { max-width: 290px; }"),
-#tags$style(type="text/css", ".well { max-width: 280px; }")
-
-library(shiny)
-
-datos_pueblos_sort <- datos_pueblos[order(datos_pueblos$Municipio), ]
-choices_muni = setNames(datos_pueblos_sort$COD_MUN, stringi::stri_trans_totitle(datos_pueblos_sort$Municipio))
-datos$Deporte <- stringi::stri_trans_totitle(datos$Deporte)
-
 shinyUI(pageWithSidebar(
   # Application title
   headerPanel(""),
@@ -26,17 +8,17 @@ shinyUI(pageWithSidebar(
     sliderInput("fechacreacion", "Fecha de fundacion",
                 min = 1985, max = 2017, value = c(1985,2017)),
     
-    selectInput("deporte", "Deporte", sort(unique(datos$Deporte)), selected = "Futbol", multiple = FALSE,
+    selectInput("selSport", "Deporte", sort(unique(entidades$Deporte)), selected = "Futbol", multiple = FALSE,
                 selectize = TRUE, width = NULL, size = NULL), 
     
-    checkboxInput("inputId", "Todos los deportes", value = FALSE, width = NULL),
+    checkboxInput("allSports", "Todos los deportes", value = FALSE, width = NULL),
     
     conditionalPanel(condition="input.tabselected==1", 
-                     selectInput("municipios", "Municipio", choices_muni, selected = NULL, multiple = FALSE,
+                     selectInput("selMuni", "Municipio", choices_muni, selected = NULL, multiple = FALSE,
                                  selectize = TRUE, width = NULL, size = NULL)),
     
     conditionalPanel(condition="input.tabselected==2",
-                     selectInput("provin", "Provincia", c("Almeria"="04", "Cadiz"="11", "Cordoba" = "14", "Granada" = "18", 
+                     selectInput("selProv", "Provincia", c("Almeria"="04", "Cadiz"="11", "Cordoba" = "14", "Granada" = "18", 
                                                           "Huelva" = "21", "Jaen" = "23", "Malaga" ="29", "Sevilla" = "41"), 
                                  selected = NULL, multiple = FALSE,  selectize = TRUE, width = NULL, size = NULL)),
     
@@ -48,7 +30,7 @@ shinyUI(pageWithSidebar(
                                                                           selected = NULL, multiple = FALSE,  selectize = TRUE, width = NULL, size = NULL)
                                       ),
                      conditionalPanel(condition="input.provormun=='Municipios'", 
-                                      selectInput("municipios", "Municipio", choices_muni, selected = NULL, 
+                                      selectInput("selMuni2", "Municipio", choices_muni, selected = NULL, 
                                                   multiple = FALSE, selectize = TRUE, width = NULL, size = NULL)))
     
 
